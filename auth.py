@@ -11,8 +11,8 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route("/register", methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username')
+        password = request.form.get('password')
         error = None
 
         if username and password:
@@ -36,20 +36,17 @@ def register():
 @bp.route("/login", methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        error = None
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-        user = db.session.execute(db.select(User).where(User.username == username)).scalar_one_or_none()
+        if username and password:
+            user = db.session.execute(db.select(User).where(User.username == username)).scalar_one_or_none()
 
-        if user:
-            if check_password_hash(user.password, password):
+            if user and check_password_hash(user.password, password):
                 session['username'] = username
                 return redirect(url_for('views.success'))
-            else:
-                error = "Check your credentials"
-        else:
-            error = "User does not exist"
+
+        error = "Check your credentials"
 
         flash(error)
 

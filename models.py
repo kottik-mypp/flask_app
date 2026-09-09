@@ -10,4 +10,4 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(db.String(250), nullable=False)
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r}, username={self.username!r}, password={self.password!r})"
+        return f"User(id={self.id!r}, username={self.username!r})"
